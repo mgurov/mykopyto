@@ -36,10 +36,19 @@ class IfAllEmpty:
     def __init__(self, key):
         self.key = key
 
+omit.IfAllEmpty = IfAllEmpty
+
 class AllEmpty:
+    """
+    Removes all keys that have all values empty in all rows 
+    """
     pass
+
+omit.AllEmpty = AllEmpty
 
 class IfAllEq:
     def __init__(self, key, value):
         self.key = key
         self.value = value
+
+omit.IfAllEq = IfAllEq
