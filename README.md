@@ -2,7 +2,7 @@
 
 <img src="./content/logo.svg" alt="logo.svg" style="width:200px;" />
 
-**MYKO**la's **PYT**h**O**n goodies. 
+**MYKO**la's **PYT**h**O**n goodies nobody asked for. 
 
 An assorted collection of reusable helpers, probably already better implemented elsewhere or excessive for idiomatic Python. 
 
