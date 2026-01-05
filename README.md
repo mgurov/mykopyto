@@ -1,10 +1,12 @@
 ## mykopyto 
 
+<img src="./content/logo.svg" alt="logo.svg" style="width:200px;" />
+
 **MYKO**la's **PYT**h**O**n goodies. 
 
 An assorted collection of reusable helpers, probably already better implemented elsewhere or excessive for idiomatic Python. 
 
-Idiosyncratic convenience of use in notebooks a la marimo over performance and good habbits. Be warned.
+Idiosyncratic convenience of use in notebooks a la [marimo](https://marimo.io/) over performance and good habbits ⚠️
 
 ## Features 
 
