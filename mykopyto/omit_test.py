@@ -18,6 +18,14 @@ def test_omit_if_all_empty_empty_strings_omitted_when_asked():
     data = {'a': ''}
     assert omit(data, IfColEmpty('a', empty_string_as_empty=True)) == {}
 
+def test_omit_if_all_empty_empty_lists_retained():
+    data = {'a': []}
+    assert omit(data, IfColEmpty('a')) == {'a': []}
+
+def test_omit_if_all_empty_empty_list_omitted_when_asked():
+    data = {'a': ''}
+    assert omit(data, IfColEmpty('a', empty_list_as_empty=True)) == {}
+
 def test_should_keep_key_specified_as_omit_if_all_empty_when_non_empty_values():
     data = [{'a': None, 'b': 2}, {'a': 1, 'b': 4}]
     assert omit(data, IfColEmpty('a')) == data
@@ -33,6 +41,14 @@ def test_omit_all_empty_function_property_style():
 def test_omit_all_empty_strings_preservered_by_default():
     data = {'a': None, 'b': ''}
     assert omit(data, omit.AllEmptyCols) == {'b': ''}
+
+def test_omit_all_empty_lists_preservered_by_default():
+    data = {'a': []}
+    assert omit(data, omit.AllEmptyCols) == {'a': []}
+
+def test_omit_all_empty_lists_omitted_when_asked():
+    data = {'a': [], 'b': 'unrelated'}
+    assert omit(data, omit.AllEmptyCols(empty_list_as_empty = True)) == {'b': 'unrelated'}
 
 def test_omit_all_empty_strings_removed_when_asked():
     data = {'a': None, 'b': ''}

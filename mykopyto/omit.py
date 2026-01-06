@@ -1,3 +1,6 @@
+from typing import Sized
+
+
 def omit(given: dict, *keys_to_omit):
     """
     Omit specified keys from a dict or a list of dicts.
@@ -34,14 +37,17 @@ def omit(given: dict, *keys_to_omit):
         return {k: v for k, v in given.items() if k not in keys_to_omit_processed}
     
 class IfColEmpty:
-    def __init__(self, key, empty_string_as_empty=False):
+    def __init__(self, key, empty_string_as_empty: bool=False, empty_list_as_empty: bool=False):
         self.key = key
         self.empty_string_as_empty = empty_string_as_empty
+        self.empty_list_as_empty = empty_list_as_empty
     
     def is_value_empty(self, value):
         if value is None:
             return True
         if self.empty_string_as_empty and value == '':
+            return True
+        if self.empty_list_as_empty and isinstance(value, Sized) and len(value) == 0:
             return True
         return False
 
@@ -51,13 +57,16 @@ class AllEmptyCols:
     """
     Removes all keys that have all values empty in all rows 
     """
-    def __init__(self, empty_string_as_empty=False):
-        self.empty_string_as_empty = empty_string_as_empty
+    def __init__(self, empty_string_as_empty=False, empty_list_as_empty: bool=False):
+        self.empty_string_as_empty: bool = empty_string_as_empty
+        self.empty_list_as_empty: bool = empty_list_as_empty
 
     def is_value_empty(self, value):
         if value is None:
             return True
         if self.empty_string_as_empty and value == '':
+            return True
+        if self.empty_list_as_empty and isinstance(value, Sized) and len(value) == 0:
             return True
         return False
 
