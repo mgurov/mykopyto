@@ -4,24 +4,26 @@ def omit(given: dict, *keys_to_omit):
 
     The key specification is: 
      - a string (name equality)
-     - if_all_empty(key) drops a column when all values are None
-     - all_empty() like if_all_empty but for all keys
-     - if_all_eq(key, value) if all values of a given key equal to the value
+     - omit.IfAllEmpty(key) drops a column when all values are None
+     - omit.AllEmptyCols() like IfAllEmpty but for all keys; omit.AllEmptyCols(empty_string_as_empty=True) considers treats strings as None
+     - omit.IfColEq(key, value) if all values of a given key equal to the value
     
     """
     given_list = given if isinstance(given, list) else [given]
     keys_to_omit_processed = set()    
     for spec in keys_to_omit:
-        if isinstance(spec, IfAllEmpty):
-            if all(d.get(spec.key) is None for d in given_list):
+        if isinstance(spec, IfColEmpty):
+            if all(spec.is_value_empty(d.get(spec.key)) for d in given_list):
                 keys_to_omit_processed.add(spec.key)
-        elif isinstance(spec, IfAllEq):
+        elif isinstance(spec, IfColEq):
             if all(d.get(spec.key) == spec.value for d in given_list):
                 keys_to_omit_processed.add(spec.key)
-        elif isinstance(spec, AllEmpty):
+        elif spec == AllEmptyCols or isinstance(spec, AllEmptyCols):
+            if spec == AllEmptyCols:
+                spec = AllEmptyCols()
             all_keys = set().union(*(d.keys() for d in given_list))
             for key in all_keys:
-                if all(d.get(key) is None for d in given_list):
+                if all(spec.is_value_empty(d.get(key)) for d in given_list):
                     keys_to_omit_processed.add(key)
         else:
             keys_to_omit_processed.add(spec)
@@ -31,23 +33,41 @@ def omit(given: dict, *keys_to_omit):
     else:
         return {k: v for k, v in given.items() if k not in keys_to_omit_processed}
     
-class IfAllEmpty:
-    def __init__(self, key):
+class IfColEmpty:
+    def __init__(self, key, empty_string_as_empty=False):
         self.key = key
+        self.empty_string_as_empty = empty_string_as_empty
+    
+    def is_value_empty(self, value):
+        if value is None:
+            return True
+        if self.empty_string_as_empty and value == '':
+            return True
+        return False
 
-omit.IfAllEmpty = IfAllEmpty
+omit.IfColEmpty = IfColEmpty
 
-class AllEmpty:
+class AllEmptyCols:
     """
     Removes all keys that have all values empty in all rows 
     """
-    pass
+    def __init__(self, empty_string_as_empty=False):
+        self.empty_string_as_empty = empty_string_as_empty
 
-omit.AllEmpty = AllEmpty
+    def is_value_empty(self, value):
+        if value is None:
+            return True
+        if self.empty_string_as_empty and value == '':
+            return True
+        return False
 
-class IfAllEq:
+
+
+omit.AllEmptyCols = AllEmptyCols
+
+class IfColEq:
     def __init__(self, key, value):
         self.key = key
         self.value = value
 
-omit.IfAllEq = IfAllEq
+omit.IfColEq = IfColEq

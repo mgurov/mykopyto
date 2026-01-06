@@ -26,8 +26,9 @@ Idiosyncratic convenience of use in notebooks a la [marimo](https://marimo.io/) 
             'stay_some_values': None,
         }]
         , 'unconditionally'
-        , omit.IfAllEmpty('all_empty_indeed')
-        , omit.IfAllEmpty('stay_some_values')        
+        , omit.IfColEmpty('all_empty_indeed')
+        , omit.IfColEmpty('stay_some_values')
+        
         ) == [
             {'id': '1', 'stay_some_values': 'present'},
             {'id': '2', 'stay_some_values': None,},
@@ -36,7 +37,7 @@ Idiosyncratic convenience of use in notebooks a la [marimo](https://marimo.io/) 
 
 ```
     data = [{'a': None, 'b': None, 'c': 'present'}, {'a': None, 'b': None}]
-    assert omit(data, AllEmpty()) == [{'c': 'present'}, {}]
+    assert omit(data, AllEmptyCols()) == [{'c': 'present'}, {}]
 ```
 
 ## -similar- Better art

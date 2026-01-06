@@ -1,2 +1,2 @@
-from mykopyto.omit import omit, IfAllEmpty, AllEmpty, IfAllEq
+from mykopyto.omit import omit, IfColEmpty, AllEmptyCols, IfColEq
 from mykopyto.core import pluck
