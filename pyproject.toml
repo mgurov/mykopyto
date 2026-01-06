@@ -1,2 +1,11 @@
+[project]
+name = "mykopyto"
+dynamic = ["version"]
+
+[tool.setuptools.packages.find]
+where = ["mykopyto"]  # Looks for packages in the current directory
+# Optionally exclude unwanted packages:
+# exclude = ["content*"]
+
 [tool.pytest.ini_options]
 pythonpath = ["."]
