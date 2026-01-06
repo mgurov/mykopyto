@@ -9,28 +9,27 @@ def omit(given: dict, *keys_to_omit):
      - if_all_eq(key, value) if all values of a given key equal to the value
     
     """
+    given_list = given if isinstance(given, list) else [given]
+    keys_to_omit_processed = set()    
+    for spec in keys_to_omit:
+        if isinstance(spec, IfAllEmpty):
+            if all(d.get(spec.key) is None for d in given_list):
+                keys_to_omit_processed.add(spec.key)
+        elif isinstance(spec, IfAllEq):
+            if all(d.get(spec.key) == spec.value for d in given_list):
+                keys_to_omit_processed.add(spec.key)
+        elif isinstance(spec, AllEmpty):
+            all_keys = set().union(*(d.keys() for d in given_list))
+            for key in all_keys:
+                if all(d.get(key) is None for d in given_list):
+                    keys_to_omit_processed.add(key)
+        else:
+            keys_to_omit_processed.add(spec)
+
     if isinstance(given, list):
-        # determine which keys to omit based on the list
-        keys_to_omit_expanded = set()
-        for spec in keys_to_omit:
-            if isinstance(spec, str):
-                keys_to_omit_expanded.add(spec)
-            elif isinstance(spec, IfAllEmpty):
-                if all(d.get(spec.key) is None for d in given):
-                    keys_to_omit_expanded.add(spec.key)
-            elif isinstance(spec, AllEmpty):
-                all_keys = set().union(*(d.keys() for d in given))
-                for key in all_keys:
-                    if all(d.get(key) is None for d in given):
-                        keys_to_omit_expanded.add(key)
-            elif isinstance(spec, IfAllEq):
-                if all(d.get(spec.key) == spec.value for d in given):
-                    keys_to_omit_expanded.add(spec.key)
-        return [{k: v for k, v in d.items() if k not in keys_to_omit_expanded} for d in given]
+        return [omit(d, *keys_to_omit_processed) for d in given]
     else:
-        # for single dict, only omit string keys
-        keys_to_omit_strings = [spec for spec in keys_to_omit if isinstance(spec, str)]
-        return {k: v for k, v in given.items() if k not in keys_to_omit_strings}
+        return {k: v for k, v in given.items() if k not in keys_to_omit_processed}
     
 class IfAllEmpty:
     def __init__(self, key):

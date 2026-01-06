@@ -15,7 +15,7 @@ def test_should_keep_key_specified_as_omit_if_all_empty_when_non_empty_values():
     assert omit(data, IfAllEmpty('a')) == data
 
 def test_omit_all_empty():
-    data = [{'a': None, 'b': None, 'c': 'present'}, {'a': None, 'b': None}]
+    data = [{'a': None, 'b': None, 'c': 'present'}, {'a': None, 'b': None, 'd': None}]
     assert omit(data, AllEmpty()) == [{'c': 'present'}, {}]
 
 def test_omit_if_all_eq():
@@ -47,3 +47,17 @@ def test_for_docs():
             {'id': '1', 'stay_some_values': 'present'},
             {'id': '2', 'stay_some_values': None,},
         ]
+    
+def test_omit_singular_special_types():
+    assert omit(
+        {
+            'id': '1',
+            'unconditionally': 'a simple case like in all the other libs',
+            'all_empty_indeed': None,
+            'stay_some_values': 'present'
+        }
+        , 'unconditionally'
+        , omit.IfAllEmpty('all_empty_indeed')
+        , omit.IfAllEmpty('stay_some_values')
+        
+        ) == {'id': '1', 'stay_some_values': 'present'}
